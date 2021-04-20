@@ -3,7 +3,7 @@ use std::ops::*;
 pub mod color;
 pub mod point;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Vec3 {
     pub e: [f64; 3],
 }

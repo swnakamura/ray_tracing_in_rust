@@ -1,7 +1,10 @@
+pub mod hittable;
 pub mod ray;
+pub mod sphere;
 pub mod vec3;
+
 use ray::Ray;
-use vec3::{color::Color, point::Point3};
+use vec3::{color::Color, point::Point3, Vec3};
 
 fn hit_sphere(center: Point3, radius: f64, r: Ray) -> f64 {
     let oc = r.origin() - center;

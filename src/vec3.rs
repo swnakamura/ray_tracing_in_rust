@@ -1,8 +1,10 @@
 #![allow(dead_code)]
 use std::ops::*;
-mod color;
-mod point;
+pub mod color;
+pub mod point;
+pub mod ray;
 
+#[derive(Clone)]
 pub struct Vec3 {
     pub e: [f64; 3],
 }

@@ -4,9 +4,15 @@ use crate::{
     Point3,
 };
 
-struct Sphere {
+pub struct Sphere {
     center: Point3,
     radius: f64,
+}
+
+impl Sphere {
+    pub fn new(center: Point3, radius: f64) -> Self {
+        Self { center, radius }
+    }
 }
 
 impl Hittable for Sphere {

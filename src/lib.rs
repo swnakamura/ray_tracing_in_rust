@@ -3,6 +3,7 @@ pub mod ray;
 pub mod sphere;
 pub mod vec3;
 
+use hittable::HittableList;
 use ray::Ray;
 use vec3::{color::Color, point::Point3, Vec3};
 
@@ -19,7 +20,10 @@ fn hit_sphere(center: Point3, radius: f64, r: Ray) -> f64 {
     }
 }
 
-pub fn ray_color(r: Ray) -> Color {
+pub fn ray_color(r: Ray, world: &HittableList) -> Color {
+    if let Some(rec) = world.hit(&r, 0., std::f64::INFINITY) {
+        return (rec.normal + Color::new([1., 1., 1.])) * 0.5;
+    }
     let center_of_the_sphere = Point3::new([0., 0., -1.]);
     let t = hit_sphere(center_of_the_sphere.clone(), 0.5, r.clone());
     if t > 0.0 {

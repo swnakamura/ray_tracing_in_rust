@@ -1,5 +1,4 @@
-mod vec3;
-use vec3::Vec3;
+use ray_tracing_in_rust::vec3::Vec3;
 
 fn main() {
     // Image

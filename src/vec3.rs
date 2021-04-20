@@ -2,7 +2,6 @@
 use std::ops::*;
 pub mod color;
 pub mod point;
-pub mod ray;
 
 #[derive(Clone)]
 pub struct Vec3 {

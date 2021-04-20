@@ -1,5 +1,6 @@
-use super::point::Point3;
-use super::Vec3;
+#![allow(dead_code)]
+use crate::vec3::point::Point3;
+use crate::vec3::Vec3;
 
 struct Ray {
     orig: Point3,

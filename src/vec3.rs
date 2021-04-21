@@ -74,6 +74,13 @@ impl Vec3 {
     pub fn reflect(&self, n: &Vec3) -> Vec3 {
         self.clone() - n.clone() * (self.dot(n) * 2.)
     }
+    pub fn refract(&self, n: &Vec3, etai_over_etat: f64) -> Vec3 {
+        let normalized_self = self.clone().normalize();
+        let cos_theta = -normalized_self.dot(&n);
+        let r_out_perp = (normalized_self + n.clone() * cos_theta) * etai_over_etat;
+        let r_out_parallel = -n.clone() * (1. - r_out_perp.length_squared()).sqrt();
+        return r_out_perp + r_out_parallel;
+    }
 }
 
 impl Mul<f64> for Vec3 {

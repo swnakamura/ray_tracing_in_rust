@@ -9,7 +9,8 @@ pub mod vec3;
 use camera::Camera;
 use colors::write_color;
 use hittable::HittableList;
-use material::{Lambertian, Metal};
+#[allow(unused_imports)]
+use material::{Dielectric, Lambertian, Metal};
 use rand::prelude::*;
 use ray::Ray;
 use sphere::Sphere;
@@ -50,8 +51,8 @@ pub fn render() {
     let mut world = HittableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new([0.8, 0.8, 0.0])));
-    let material_center = Rc::new(Lambertian::new(Color::new([0.7, 0.3, 0.3])));
-    let material_left = Rc::new(Metal::new(Color::new([0.8, 0.8, 0.8]), 0.3));
+    let material_center = Rc::new(Dielectric::new(1.5));
+    let material_left = Rc::new(Dielectric::new(1.5));
     let material_right = Rc::new(Metal::new(Color::new([0.8, 0.6, 0.2]), 1.0));
 
     world.add(Rc::new(Sphere::new(

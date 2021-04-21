@@ -1,5 +1,5 @@
 use super::*;
-pub fn write_color(mut colors: Color, samples_per_pixel: i64) {
+pub fn write_color(mut colors: Color, samples_per_pixel: isize) {
     let scale = 1.0 / samples_per_pixel as f64;
     colors *= scale;
     let [mut r, mut g, mut b] = colors.e;

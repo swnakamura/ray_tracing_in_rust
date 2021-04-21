@@ -18,7 +18,7 @@ use vec3::{
     Vec3,
 };
 
-pub fn ray_color(r: Ray, world: &HittableList, depth: i64) -> Color {
+pub fn ray_color(r: Ray, world: &HittableList, depth: isize) -> Color {
     // if too deep, no more light is gathered
     if depth <= 0 {
         return Color::new([0., 0., 0.]);

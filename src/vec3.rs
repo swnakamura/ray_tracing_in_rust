@@ -49,12 +49,27 @@ impl Vec3 {
         self.e[2]
     }
 
-    pub fn write_color(&self) {
+    pub fn write_color(&self, samples_per_pixel: i64) {
+        let mut colors = self.clone();
+        let scale = 1.0 / samples_per_pixel as f64;
+        colors *= scale;
+        let [r, g, b] = colors.e;
+
+        fn clamp(x: f64, min: f64, max: f64) -> f64 {
+            if x < min {
+                min
+            } else if x > max {
+                max
+            } else {
+                x
+            }
+        }
+
         println!(
             "{} {} {}",
-            (255.999 * self.x()) as i32,
-            (255.999 * self.y()) as i32,
-            (255.999 * self.z()) as i32,
+            (256. * clamp(r, 0.0, 0.999)) as i32,
+            (256. * clamp(g, 0.0, 0.999)) as i32,
+            (256. * clamp(b, 0.0, 0.999)) as i32,
         );
     }
 }
@@ -127,5 +142,25 @@ impl Neg for Vec3 {
         self.e[1] = -self.e[1];
         self.e[2] = -self.e[2];
         self
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, other: Self) {
+        *self = Self {
+            e: [
+                self.e[0] + other.e[0],
+                self.e[1] + other.e[1],
+                self.e[2] + other.e[2],
+            ],
+        }
+    }
+}
+
+impl MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, other: f64) {
+        *self = Self {
+            e: [self.e[0] * other, self.e[1] * other, self.e[2] * other],
+        }
     }
 }

@@ -4,7 +4,7 @@ use std::ops::*;
 pub mod color;
 pub mod point;
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, std::fmt::Debug)]
 pub struct Vec3 {
     pub e: [f64; 3],
 }
@@ -35,7 +35,11 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
     pub fn length_squared(&self) -> f64 {
-        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+        self.e.iter().map(|x| x * x).sum()
+    }
+    pub fn near_zero(&self) -> bool {
+        let eps = 1e-8;
+        return self.e.iter().all(|&x| x < eps);
     }
 
     pub fn dot(&self, rhs: &Self) -> f64 {
@@ -65,6 +69,10 @@ impl Vec3 {
     }
     pub fn z(&self) -> f64 {
         self.e[2]
+    }
+
+    pub fn reflect(&self, n: &Vec3) -> Vec3 {
+        self.clone() - n.clone() * (self.dot(n) * 2.)
     }
 }
 

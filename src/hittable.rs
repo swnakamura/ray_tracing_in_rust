@@ -1,12 +1,17 @@
-use crate::{ray::Ray, Point3, Vec3};
+use super::*;
+use material::Material;
+use ray::Ray;
 use std::rc::Rc;
+use Point3;
+use Vec3;
 
 #[derive(Default)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
+    pub mat_ptr: Option<Rc<dyn Material>>,
     pub t: f64,
-    front_face: bool,
+    pub front_face: bool,
 }
 
 impl HitRecord {

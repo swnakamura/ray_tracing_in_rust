@@ -1,6 +1,7 @@
 pub mod camera;
 pub mod colors;
 pub mod hittable;
+pub mod material;
 pub mod ray;
 pub mod sphere;
 pub mod vec3;
@@ -8,6 +9,7 @@ pub mod vec3;
 use camera::Camera;
 use colors::write_color;
 use hittable::HittableList;
+use material::{Lambertian, Metal};
 use rand::prelude::*;
 use ray::Ray;
 use sphere::Sphere;
@@ -19,17 +21,16 @@ use vec3::{
 };
 
 pub fn ray_color(r: Ray, world: &HittableList, depth: isize) -> Color {
-    // if too deep, no more light is gathered
+    // if we've exceeded the ray bounce limit, no more light is computed
     if depth <= 0 {
         return Color::new([0., 0., 0.]);
     }
     // if hit, return that color
     if let Some(rec) = world.hit(&r, 0.001, std::f64::INFINITY) {
-        return ray_color(
-            Ray::new(rec.p.clone(), rec.normal + random_unit_vector()),
-            &world,
-            depth - 1,
-        ) * 0.5;
+        if let Some((scattered_ray, attenuation)) = rec.mat_ptr.clone().unwrap().scatter(&r, &rec) {
+            return ray_color(scattered_ray, &world, depth - 1) * attenuation;
+        }
+        return Color::new([0., 0., 0.]);
     }
     // else, background light
     let unit_direction = r.direction().normalize();
@@ -47,8 +48,32 @@ pub fn render() {
 
     // World
     let mut world = HittableList::new();
-    world.add(Rc::new(Sphere::new(Point3::new([0., 0., -1.]), 0.5)));
-    world.add(Rc::new(Sphere::new(Point3::new([0., -100.5, -1.]), 100.)));
+
+    let material_ground = Rc::new(Lambertian::new(Color::new([0.8, 0.8, 0.0])));
+    let material_center = Rc::new(Lambertian::new(Color::new([0.7, 0.3, 0.3])));
+    let material_left = Rc::new(Metal::new(Color::new([0.8, 0.8, 0.8])));
+    let material_right = Rc::new(Metal::new(Color::new([0.8, 0.6, 0.2])));
+
+    world.add(Rc::new(Sphere::new(
+        Point3::new([0.0, -100.5, -1.0]),
+        100.,
+        material_ground,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new([0.0, 0.0, -1.0]),
+        0.5,
+        material_center,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new([-1.0, 0.0, -1.0]),
+        0.5,
+        material_left,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new([1.0, 0.0, -1.0]),
+        0.5,
+        material_right,
+    )));
 
     // Camera
     let cam = Camera::new();

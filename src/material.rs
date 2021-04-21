@@ -73,8 +73,20 @@ impl Material for Dielectric {
             true => 1. / self.ir,
         };
 
-        let refracted_direction = r_in.direction().refract(&rec.normal, refraction_ratio);
-        let refracted_ray = Ray::new(rec.p.clone(), refracted_direction);
+        let normalized_r = r_in.direction().clone().normalize();
+        let n = &rec.normal;
+        let cos_theta = -normalized_r.dot(&n);
+        let sin_theta = (1. - cos_theta * cos_theta).sqrt();
+        let cannot_refract = refraction_ratio * sin_theta > 1.;
+        let direction = if cannot_refract
+            || Dielectric::reflectance(cos_theta, refraction_ratio) > random::<f64>()
+        {
+            // the ray didn't refract, but reflected
+            r_in.direction().reflect(&n)
+        } else {
+            r_in.direction().refract(&rec.normal, refraction_ratio)
+        };
+        let refracted_ray = Ray::new(rec.p.clone(), direction);
 
         Some((refracted_ray, Color::new([1., 1., 1.])))
     }
@@ -83,5 +95,11 @@ impl Material for Dielectric {
 impl Dielectric {
     pub fn new(ir: f64) -> Self {
         Self { ir }
+    }
+    fn reflectance(cosine: f64, ir: f64) -> f64 {
+        // Use Schlick's approximation for reflectance.
+        let mut r0 = (1. - ir) / (1. + ir);
+        r0 = r0 * r0;
+        return r0 + (1. - r0) * (1. - cosine).powi(5);
     }
 }

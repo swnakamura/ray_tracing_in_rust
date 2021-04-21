@@ -9,28 +9,9 @@ use sphere::Sphere;
 use std::rc::Rc;
 use vec3::{color::Color, point::Point3, Vec3};
 
-fn hit_sphere(center: Point3, radius: f64, r: Ray) -> f64 {
-    let oc = r.origin() - center;
-    let a = r.direction().length_squared();
-    let half_b = r.direction().dot(&oc);
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0. {
-        -1.0
-    } else {
-        (-half_b - discriminant.sqrt()) / a
-    }
-}
-
 pub fn ray_color(r: Ray, world: &HittableList) -> Color {
     if let Some(rec) = world.hit(&r, 0., std::f64::INFINITY) {
         return (rec.normal + Color::new([1., 1., 1.])) * 0.5;
-    }
-    let center_of_the_sphere = Point3::new([0., 0., -1.]);
-    let t = hit_sphere(center_of_the_sphere.clone(), 0.5, r.clone());
-    if t > 0.0 {
-        let n = (r.at(t) - center_of_the_sphere).normalize();
-        return Color::new([n.x() + 1.0, n.y() + 1.0, n.z() + 1.0]) * 0.5;
     }
     let unit_direction = r.direction().normalize();
     let t = (unit_direction.y() + 1.0) * 0.5;

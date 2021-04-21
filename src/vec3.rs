@@ -66,30 +66,6 @@ impl Vec3 {
     pub fn z(&self) -> f64 {
         self.e[2]
     }
-
-    pub fn write_color(&self, samples_per_pixel: i64) {
-        let mut colors = self.clone();
-        let scale = 1.0 / samples_per_pixel as f64;
-        colors *= scale;
-        let [r, g, b] = colors.e;
-
-        fn clamp(x: f64, min: f64, max: f64) -> f64 {
-            if x < min {
-                min
-            } else if x > max {
-                max
-            } else {
-                x
-            }
-        }
-
-        println!(
-            "{} {} {}",
-            (256. * clamp(r, 0.0, 0.999)) as i32,
-            (256. * clamp(g, 0.0, 0.999)) as i32,
-            (256. * clamp(b, 0.0, 0.999)) as i32,
-        );
-    }
 }
 
 impl Mul<f64> for Vec3 {

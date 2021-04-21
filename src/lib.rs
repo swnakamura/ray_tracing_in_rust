@@ -1,10 +1,12 @@
 pub mod camera;
+pub mod colors;
 pub mod hittable;
 pub mod ray;
 pub mod sphere;
 pub mod vec3;
 
 use camera::Camera;
+use colors::write_color;
 use hittable::HittableList;
 use rand::prelude::*;
 use ray::Ray;
@@ -69,7 +71,7 @@ pub fn render() {
                 let r = cam.get_ray(u, v);
                 pixel_color += ray_color(r, &world, max_depth);
             }
-            pixel_color.write_color(samples_per_pixel);
+            write_color(pixel_color, samples_per_pixel);
         }
     }
     eprintln!("\nDone.");

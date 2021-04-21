@@ -8,3 +8,6 @@ pub fn random_in_unit_sphere() -> Point3 {
     } {}
     return p;
 }
+pub fn random_unit_vector() -> Point3 {
+    random_in_unit_sphere().normalize()
+}

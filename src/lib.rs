@@ -14,7 +14,7 @@ use sphere::Sphere;
 use std::rc::Rc;
 use vec3::{
     color::Color,
-    point::{random_in_unit_sphere, Point3},
+    point::{random_unit_vector, Point3},
     Vec3,
 };
 
@@ -26,7 +26,7 @@ pub fn ray_color(r: Ray, world: &HittableList, depth: i64) -> Color {
     // if hit, return that color
     if let Some(rec) = world.hit(&r, 0.001, std::f64::INFINITY) {
         return ray_color(
-            Ray::new(rec.p.clone(), rec.normal + random_in_unit_sphere()),
+            Ray::new(rec.p.clone(), rec.normal + random_unit_vector()),
             &world,
             depth - 1,
         ) * 0.5;

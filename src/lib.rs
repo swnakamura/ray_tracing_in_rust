@@ -10,12 +10,26 @@ use rand::prelude::*;
 use ray::Ray;
 use sphere::Sphere;
 use std::rc::Rc;
-use vec3::{color::Color, point::Point3, Vec3};
+use vec3::{
+    color::Color,
+    point::{random_in_unit_sphere, Point3},
+    Vec3,
+};
 
-pub fn ray_color(r: Ray, world: &HittableList) -> Color {
-    if let Some(rec) = world.hit(&r, 0., std::f64::INFINITY) {
-        return (rec.normal + Color::new([1., 1., 1.])) * 0.5;
+pub fn ray_color(r: Ray, world: &HittableList, depth: i64) -> Color {
+    // if too deep, no more light is gathered
+    if depth <= 0 {
+        return Color::new([0., 0., 0.]);
     }
+    // if hit, return that color
+    if let Some(rec) = world.hit(&r, 0.001, std::f64::INFINITY) {
+        return ray_color(
+            Ray::new(rec.p.clone(), rec.normal + random_in_unit_sphere()),
+            &world,
+            depth - 1,
+        ) * 0.5;
+    }
+    // else, background light
     let unit_direction = r.direction().normalize();
     let t = (unit_direction.y() + 1.0) * 0.5;
     Color::new([1.0, 1.0, 1.0]) * (1.0 - t) + Color::new([0.5, 0.7, 1.0]) * t
@@ -27,6 +41,7 @@ pub fn render() {
     let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as i32;
     let samples_per_pixel = 100;
+    let max_depth = 50;
 
     // World
     let mut world = HittableList::new();
@@ -52,7 +67,7 @@ pub fn render() {
                     (h as f64 + rng.gen::<f64>()) / (image_height - 1) as f64,
                 );
                 let r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, &world);
+                pixel_color += ray_color(r, &world, max_depth);
             }
             pixel_color.write_color(samples_per_pixel);
         }

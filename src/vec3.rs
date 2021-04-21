@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+use rand::prelude::random;
 use std::ops::*;
 pub mod color;
 pub mod point;
@@ -11,6 +12,23 @@ pub struct Vec3 {
 impl Vec3 {
     pub fn new(e: [f64; 3]) -> Self {
         Self { e }
+    }
+    pub fn random() -> Self {
+        Self {
+            e: [random(), random(), random()],
+        }
+    }
+    pub fn random_in_range(min: f64, max: f64) -> Self {
+        fn linearmap(val: f64, min: f64, max: f64) -> f64 {
+            val * (max - min) + min
+        }
+        Self {
+            e: [
+                linearmap(random(), min, max),
+                linearmap(random(), min, max),
+                linearmap(random(), min, max),
+            ],
+        }
     }
 
     pub fn length(&self) -> f64 {

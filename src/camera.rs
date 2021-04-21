@@ -20,10 +20,8 @@ impl Camera {
         let origin = Point3::new([0., 0., 0.]);
         let horizontal = Vec3::new([viewport_width, 0., 0.]);
         let vertical = Vec3::new([0., viewport_height, 0.]);
-        let lower_left_corner = origin.clone()
-            - horizontal.clone() / 2.
-            - vertical.clone() / 2.
-            - Vec3::new([0., 0., focal_length]);
+        let lower_left_corner =
+            origin - horizontal / 2. - vertical / 2. - Vec3::new([0., 0., focal_length]);
         Self {
             origin,
             horizontal,
@@ -34,11 +32,8 @@ impl Camera {
 
     pub fn get_ray(&self, u: f64, v: f64) -> Ray {
         Ray::new(
-            self.origin.clone(),
-            self.lower_left_corner.clone()
-                + self.horizontal.clone() * u
-                + self.vertical.clone() * v
-                - self.origin.clone(),
+            self.origin,
+            self.lower_left_corner + self.horizontal * u + self.vertical * v - self.origin,
         )
     }
 }

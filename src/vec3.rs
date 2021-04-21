@@ -4,7 +4,7 @@ use std::ops::*;
 pub mod color;
 pub mod point;
 
-#[derive(Clone, Default, std::fmt::Debug)]
+#[derive(Clone, Copy, Default, std::fmt::Debug)]
 pub struct Vec3 {
     pub e: [f64; 3],
 }
@@ -72,13 +72,13 @@ impl Vec3 {
     }
 
     pub fn reflect(&self, n: &Vec3) -> Vec3 {
-        self.clone() - n.clone() * (self.dot(n) * 2.)
+        *self - *n * (self.dot(n) * 2.)
     }
     pub fn refract(&self, n: &Vec3, etai_over_etat: f64) -> Vec3 {
-        let normalized_self = self.clone().normalize();
+        let normalized_self = self.normalize();
         let cos_theta = -normalized_self.dot(&n);
-        let r_out_perp = (normalized_self + n.clone() * cos_theta) * etai_over_etat;
-        let r_out_parallel = -n.clone() * (1. - r_out_perp.length_squared()).sqrt();
+        let r_out_perp = (normalized_self + *n * cos_theta) * etai_over_etat;
+        let r_out_parallel = -*n * (1. - r_out_perp.length_squared()).sqrt();
         return r_out_perp + r_out_parallel;
     }
 }

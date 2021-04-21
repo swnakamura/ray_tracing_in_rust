@@ -18,15 +18,15 @@ impl Lambertian {
 
 impl Material for Lambertian {
     fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
-        let mut scatter_direction = rec.normal.clone() + random_unit_vector();
+        let mut scatter_direction = rec.normal + random_unit_vector();
 
         // Catch degenerate scatter direction
         if scatter_direction.near_zero() {
-            scatter_direction = rec.normal.clone();
+            scatter_direction = rec.normal;
         }
 
-        let scattered = Ray::new(rec.p.clone(), scatter_direction);
-        return Some((scattered, self.albedo.clone()));
+        let scattered = Ray::new(rec.p, scatter_direction);
+        return Some((scattered, self.albedo));
     }
 }
 
@@ -39,13 +39,10 @@ impl Material for Metal {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
         let reflect_direction = r_in.direction().reflect(&rec.normal);
 
-        let scattered = Ray::new(
-            rec.p.clone(),
-            reflect_direction + random_unit_vector() * self.fuzz,
-        );
+        let scattered = Ray::new(rec.p, reflect_direction + random_unit_vector() * self.fuzz);
         // TODO:Isn't this always positive?
         if rec.front_face {
-            Some((scattered, self.albedo.clone()))
+            Some((scattered, self.albedo))
         } else {
             None
         }
@@ -73,7 +70,7 @@ impl Material for Dielectric {
             true => 1. / self.ir,
         };
 
-        let normalized_r = r_in.direction().clone().normalize();
+        let normalized_r = r_in.direction().normalize();
         let n = &rec.normal;
         let cos_theta = -normalized_r.dot(&n);
         let sin_theta = (1. - cos_theta * cos_theta).sqrt();
@@ -86,7 +83,7 @@ impl Material for Dielectric {
         } else {
             r_in.direction().refract(&rec.normal, refraction_ratio)
         };
-        let refracted_ray = Ray::new(rec.p.clone(), direction);
+        let refracted_ray = Ray::new(rec.p, direction);
 
         Some((refracted_ray, Color::new([1., 1., 1.])))
     }

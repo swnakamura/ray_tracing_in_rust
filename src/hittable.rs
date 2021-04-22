@@ -1,15 +1,11 @@
 use super::*;
 use material::Material;
-use ray::Ray;
-use std::rc::Rc;
-use Point3;
-use Vec3;
 
 #[derive(Default)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
-    pub mat_ptr: Option<Rc<dyn Material>>,
+    pub mat_ptr: Option<Arc<dyn Material>>,
     pub t: f64,
     pub front_face: bool,
 }
@@ -30,7 +26,7 @@ pub trait Hittable {
 }
 
 pub struct HittableList {
-    pub objects: Vec<Rc<dyn Hittable>>,
+    pub objects: Vec<Arc<dyn Hittable + Send + Sync>>,
 }
 
 impl HittableList {
@@ -39,7 +35,7 @@ impl HittableList {
             objects: Vec::new(),
         }
     }
-    pub fn add(&mut self, object: Rc<dyn Hittable>) {
+    pub fn add(&mut self, object: Arc<dyn Hittable + Send + Sync>) {
         self.objects.push(object)
     }
 

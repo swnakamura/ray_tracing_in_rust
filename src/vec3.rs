@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 use rand::prelude::random;
+use std::iter::Sum;
 use std::ops::*;
 pub mod color;
 pub mod point;
@@ -171,5 +172,11 @@ impl MulAssign<f64> for Vec3 {
         *self = Self {
             e: [self.e[0] * other, self.e[1] * other, self.e[2] * other],
         }
+    }
+}
+
+impl Sum for Vec3 {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        iter.fold(Vec3::new(0., 0., 0.), Add::add)
     }
 }

@@ -1,19 +1,19 @@
+use super::*;
 use crate::{
     hittable::{HitRecord, Hittable},
     material::Material,
     ray::Ray,
     Point3,
 };
-use std::rc::Rc;
 
 pub struct Sphere {
     center: Point3,
     radius: f64,
-    mat_ptr: Rc<dyn Material>,
+    mat_ptr: Arc<dyn Material + Send + Sync>,
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64, mat_ptr: Rc<dyn Material>) -> Self {
+    pub fn new(center: Point3, radius: f64, mat_ptr: Arc<dyn Material + Send + Sync>) -> Self {
         Self {
             center,
             radius,

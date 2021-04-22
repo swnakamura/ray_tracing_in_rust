@@ -85,7 +85,7 @@ impl Material for Dielectric {
         };
         let refracted_ray = Ray::new(rec.p, direction);
 
-        Some((refracted_ray, Color::new([1., 1., 1.])))
+        Some((refracted_ray, Color::new(1., 1., 1.)))
     }
 }
 

@@ -24,19 +24,19 @@ use vec3::{
 pub fn ray_color(r: Ray, world: &HittableList, depth: isize) -> Color {
     // if we've exceeded the ray bounce limit, no more light is computed
     if depth <= 0 {
-        return Color::new([0., 0., 0.]);
+        return Color::new(0., 0., 0.);
     }
     // if hit, return that color
     if let Some(rec) = world.hit(&r, 0.001, std::f64::INFINITY) {
         if let Some((scattered_ray, attenuation)) = rec.mat_ptr.clone().unwrap().scatter(&r, &rec) {
             return ray_color(scattered_ray, &world, depth - 1) * attenuation;
         }
-        return Color::new([0., 0., 0.]);
+        return Color::new(0., 0., 0.);
     }
     // else, background light
     let unit_direction = r.direction().normalize();
     let t = (unit_direction.y() + 1.0) * 0.5;
-    Color::new([1.0, 1.0, 1.0]) * (1.0 - t) + Color::new([0.5, 0.7, 1.0]) * t
+    Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
 }
 
 pub fn render() {
@@ -50,44 +50,42 @@ pub fn render() {
     // World
     let mut world = HittableList::new();
 
-    let R = (std::f64::consts::PI / 4.).cos();
-
-    let material_ground = Rc::new(Lambertian::new(Color::new([0.8, 0.8, 0.0])));
-    let material_center = Rc::new(Lambertian::new(Color::new([0.1, 0.2, 0.5])));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Rc::new(Dielectric::new(1.5));
-    let material_right = Rc::new(Metal::new(Color::new([0.8, 0.6, 0.2]), 0.0));
+    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     world.add(Rc::new(Sphere::new(
-        Point3::new([0.0, -100.5, -1.0]),
+        Point3::new(0.0, -100.5, -1.0),
         100.0,
         material_ground.clone(),
     )));
     world.add(Rc::new(Sphere::new(
-        Point3::new([0.0, 0.0, -1.0]),
+        Point3::new(0.0, 0.0, -1.0),
         0.5,
         material_center.clone(),
     )));
     world.add(Rc::new(Sphere::new(
-        Point3::new([-1.0, 0.0, -1.0]),
+        Point3::new(-1.0, 0.0, -1.0),
         0.5,
         material_left.clone(),
     )));
     world.add(Rc::new(Sphere::new(
-        Point3::new([-1.0, 0.0, -1.0]),
+        Point3::new(-1.0, 0.0, -1.0),
         -0.45,
         material_left.clone(),
     )));
     world.add(Rc::new(Sphere::new(
-        Point3::new([1.0, 0.0, -1.0]),
+        Point3::new(1.0, 0.0, -1.0),
         0.5,
         material_right.clone(),
     )));
 
     // Camera
     let cam = Camera::new(
-        Point3::new([-2., 2., 1.]),
-        Point3::new([0., 0., -1.]),
-        Vec3::new([0., 1., 0.]),
+        Point3::new(-2., 2., 1.),
+        Point3::new(0., 0., -1.),
+        Vec3::new(0., 1., 0.),
         20.,
         aspect_ratio,
     );
@@ -101,7 +99,7 @@ pub fn render() {
     for h in (0..image_height).rev() {
         eprint!("\rScanlines remaining: {} ", h);
         for w in 0..image_width {
-            let mut pixel_color = Color::new([0., 0., 0.]);
+            let mut pixel_color = Color::new(0., 0., 0.);
             for _s in 0..samples_per_pixel {
                 let (u, v) = (
                     (w as f64 + rng.gen::<f64>()) / (image_width - 1) as f64,

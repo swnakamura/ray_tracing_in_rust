@@ -10,8 +10,8 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new(e: [f64; 3]) -> Self {
-        Self { e }
+    pub fn new(a: f64, b: f64, c: f64) -> Self {
+        Self { e: [a, b, c] }
     }
     pub fn random() -> Self {
         Self {

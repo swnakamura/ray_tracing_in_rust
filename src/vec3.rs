@@ -39,7 +39,7 @@ impl Vec3 {
     }
     pub fn near_zero(&self) -> bool {
         let eps = 1e-8;
-        return self.e.iter().all(|&x| x < eps);
+        return self.e.iter().all(|&x| x.abs() < eps);
     }
 
     pub fn dot(&self, rhs: &Self) -> f64 {

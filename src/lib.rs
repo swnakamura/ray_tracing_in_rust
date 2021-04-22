@@ -15,11 +15,7 @@ use rand::prelude::*;
 use ray::Ray;
 use sphere::Sphere;
 use std::rc::Rc;
-use vec3::{
-    color::Color,
-    point::{random_unit_vector, Point3},
-    Vec3,
-};
+use vec3::{color::Color, point::Point3, Vec3};
 
 pub fn ray_color(r: Ray, world: &HittableList, depth: isize) -> Color {
     // if we've exceeded the ray bounce limit, no more light is computed
@@ -82,12 +78,19 @@ pub fn render() {
     )));
 
     // Camera
+    let lookfrom = Point3::new(-2., 2., 1.);
+    let lookat = Point3::new(0., 0., -1.);
+    let vup = Vec3::new(0., 1., 0.);
+    let dist_to_focus = (lookfrom - lookat).length();
+    let aperture = 2.0;
     let cam = Camera::new(
-        Point3::new(-2., 2., 1.),
-        Point3::new(0., 0., -1.),
-        Vec3::new(0., 1., 0.),
-        20.,
+        lookfrom,
+        lookat,
+        vup,
+        90.,
         aspect_ratio,
+        aperture,
+        dist_to_focus,
     );
 
     // rand generator for antialiasing

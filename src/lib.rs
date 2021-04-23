@@ -106,12 +106,12 @@ fn random_scene() -> HittableList {
             );
 
             if (center - Point3::new(4., 0.2, 0.)).length() > 0.9 {
-                if choose_mat < 0.8 {
+                if choose_mat < 0.7 {
                     // diffuse
                     let albedo = Color::random() * Color::random();
                     let sphere_material = Arc::new(Lambertian::new(albedo));
                     world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
-                } else if choose_mat < 0.95 {
+                } else if choose_mat < 0.8 {
                     // metal
                     let albedo = Color::random_in_range(0.5, 1.);
                     let fuzz = random::<f64>() * 0.5;
